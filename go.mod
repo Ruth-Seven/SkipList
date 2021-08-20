@@ -1,4 +1,4 @@
-module github.com/skiplist
+module github.com/Ruth-Seven/skiplist
 
 go 1.16
 
