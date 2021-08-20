@@ -1,0 +1,41 @@
+name: Go
+
+on:
+  push:
+    branches: [master, feat/*]
+  pull_request:
+    branches: [master, feat/*]
+
+defaults:
+  run:
+    working-directory: .
+
+jobs:
+  checkout:
+    name: Go static analysis And Unit test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.13
+      - name: golangci-lint installation
+        uses: golangci/golangci-lint-action@v2
+
+      - name: Get dependencies
+        run: go mod tidy
+
+      - name: Unit Test
+        run: go test . -v -coverprofile=covprofile.cov
+
+      - name: Install goveralls
+        env:
+          GO111MODULE: off
+        run: go get github.com/mattn/goveralls
+
+      - name: Send coverage
+        env:
+          COVERALLS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: goveralls -coverprofile=covprofile.cov -service=github
