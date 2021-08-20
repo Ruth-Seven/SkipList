@@ -1,19 +1,18 @@
 package skiplist
 
-type Element interface {
-	ExtendedKey() float64
+import "constraint"
+
+type Less interface {
+	constraint.Ordered
 }
 
-type EmptyElement int
+type Key Less
+type Value [T any]
 
-func (e EmptyElement) ExtendedKey() float64 {
-	return 0
-}
-
-var empty EmptyElement
+var empty = 0
 
 type SkipItem struct {
-	Element
+	Element Less
 	key     float64
 	pre     *SkipItem
 	forward []*SkipItem
